@@ -1,6 +1,6 @@
 # Vlaams Codex – Platskript (VS Code Extension)
 
-Syntax highlighting, snippets, and run/build tools for **Platskript** (`.plats`), the **Vlaams Codex** parody language.
+Syntax highlighting, snippets, and run/build tools for **Platskript** (`.plats`), the **Vlaams Codex** language.
 
 ## Features
 
@@ -49,4 +49,3 @@ Press **F5** in VS Code to start an Extension Development Host.
 ## License
 
 MIT. See `LICENSE`.
-
