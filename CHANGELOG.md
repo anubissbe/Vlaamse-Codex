@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2025-12-27
+
+### Added
+
+- Comprehensive PyPI metadata for better discoverability
+- Project URLs (Homepage, Documentation, Repository, Changelog, Bug Tracker)
+- Keywords for search optimization
+- Full classifier taxonomy (Development Status, Audience, Topics, Languages)
+- Maintainer information
+- Python 3.13 support declared
+
+### Changed
+
+- Enhanced package description for clarity
+- Improved project categorization on PyPI
+
 ## [0.1.1] - 2025-12-27
 
 ### Added
@@ -49,6 +65,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Space literal: `spatie`
 - Operators: `plakt`, `derbij`, `deraf`, `keer`, `gedeeld`, `isgelijk`, `isniegelijk`, `isgroterdan`, `iskleinerdan`, `enook`, `ofwel`, `nie`
 
-[Unreleased]: https://github.com/anubissbe/Vlaamse-Codex/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/anubissbe/Vlaamse-Codex/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/anubissbe/Vlaamse-Codex/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/anubissbe/Vlaamse-Codex/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/anubissbe/Vlaamse-Codex/releases/tag/v0.1.0
