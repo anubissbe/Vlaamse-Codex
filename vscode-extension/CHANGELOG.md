@@ -2,9 +2,9 @@
 
 All notable changes to this extension will be documented in this file.
 
-## 0.1.6
+## 0.1.7
 
-- Version alignment with VlaamsCodex 0.1.6
+- Version alignment with VlaamsCodex 0.1.7
 - Language registration for `.plats` (`platskript`)
 - Syntax highlighting (TextMate)
 - Snippets for common Plats patterns

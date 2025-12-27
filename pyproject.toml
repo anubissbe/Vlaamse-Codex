@@ -5,7 +5,7 @@ backend-path = ["."]
 
 [project]
 name = "vlaamscodex"
-version = "0.1.6"
+version = "0.1.7"
 description = "A transpiler toolchain for Platskript, a parody programming language using Flemish dialect keywords that compiles to Python"
 readme = "README.md"
 requires-python = ">=3.10"
