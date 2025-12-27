@@ -1,32 +1,60 @@
-# Repository Guidelines
+# Agent Guidelines
 
-## Project Structure & Module Organization
-- `src/vlaamscodex/` contains the reference implementation (codec, compiler, CLI).
-- `examples/` includes sample `.plats` programs (start with `examples/hello.plats`).
-- `docs/` holds the design notes, packaging guidance, and language spec.
-- `data/` ships runtime artifacts like the `.pth` startup hook.
-- `pyproject.toml.example` is a packaging template (not active config).
+Guidelines for AI coding agents working with the VlaamsCodex repository.
 
-## Build, Test, and Development Commands
-- `plats run examples/hello.plats` compiles and executes a Platskript script.
-- `plats build examples/hello.plats --out /tmp/hello.py` writes generated Python.
-- `plats show-python examples/hello.plats` prints the generated Python to stdout.
-- `python -m build` builds sdist/wheel when a real `pyproject.toml` is present.
+## Project Structure
 
-## Coding Style & Naming Conventions
-- Python 3.10+ features are used (see `pyproject.toml.example`).
-- Keep modules small and single-purpose (`codec.py`, `compiler.py`, `cli.py`).
-- Use 4-space indentation and `snake_case` for functions/vars; `PascalCase` for classes.
-- Favor explicit types in public APIs; keep helpers prefixed with `_`.
+| Directory | Purpose |
+|-----------|---------|
+| `src/vlaamscodex/` | Core implementation (compiler, codec, CLI) |
+| `examples/` | Sample Platskript programs |
+| `docs/` | Technical documentation and specifications |
+| `data/` | Runtime artifacts (`.pth` startup hook) |
+| `tests/` | Test suite |
 
-## Testing Guidelines
-- No automated test suite is present yet. If you add one, document it here.
-- Suggested start: `tests/` with `pytest`, naming files `test_*.py`.
+**Note**: `pyproject.toml.example` is a reference template, not active configuration.
 
-## Commit & Pull Request Guidelines
-- No Git history is available in this repo, so no commit convention is enforced.
-- For PRs, include a short summary, reproduction steps (if applicable), and sample `.plats` input/output.
+## Development Commands
 
-## Security & Configuration Notes
-- Treat untrusted `.plats` files as code: don’t execute automatically.
-- If enabling “magic mode” (`python script.plats`), ensure the `.pth` hook installs correctly.
+| Command | Description |
+|---------|-------------|
+| `plats run examples/hello.plats` | Execute a Platskript program |
+| `plats build examples/hello.plats --out /tmp/hello.py` | Compile to Python file |
+| `plats show-python examples/hello.plats` | Display generated Python source |
+| `python -m build` | Build sdist and wheel distributions |
+| `pytest tests/` | Run test suite |
+
+## Code Style
+
+- **Python Version**: 3.10+ (see `pyproject.toml`)
+- **Module Design**: Single-purpose modules (`codec.py`, `compiler.py`, `cli.py`)
+- **Indentation**: 4 spaces
+- **Naming**: `snake_case` for functions/variables, `PascalCase` for classes
+- **Type Hints**: Required for public APIs; prefix private helpers with `_`
+
+## Testing
+
+Test suite located in `tests/` using pytest.
+
+```bash
+# Run all tests
+pytest tests/
+
+# Run specific test file
+pytest tests/test_compiler.py -v
+
+# Run specific test function
+pytest tests/test_compiler.py::test_compile_plats_hello_shape -v
+```
+
+## Commit Guidelines
+
+- Include concise summary describing the change
+- For bug fixes: include reproduction steps and sample `.plats` input/output
+- Reference related issues when applicable
+
+## Security Considerations
+
+- Treat `.plats` files as executable code
+- Never execute untrusted Platskript files automatically
+- The `.pth` startup hook executes during Python initialization; ensure it remains minimal
