@@ -175,6 +175,7 @@ docs/                # Technical documentation
 - [Packaging & Installation](docs/03_packaging_and_install.md)
 - [Language Specification](docs/04_language_spec.md)
 - [Security Notes](docs/05_security_and_safety.md)
+- [User Guide](docs/06_user_guide.md)
 
 ## Contributing
 
