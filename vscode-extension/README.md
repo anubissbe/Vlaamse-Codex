@@ -1,6 +1,6 @@
-# VlaamsCodex – Platskript (VS Code Extension)
+# Vlaams Codex – Platskript (VS Code Extension)
 
-Syntax highlighting, snippets, and run commands for **Platskript** (`.plats`), the parody language from **VlaamsCodex**.
+Syntax highlighting, snippets, and run commands for **Platskript** (`.plats`), the parody language from **Vlaams Codex**.
 
 ## Features
 
