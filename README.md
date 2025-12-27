@@ -1,16 +1,24 @@
-# Repository: Vlaamse Codex / Platskript
+# VlaamsCodex
 
-VlaamsCodex is nen (parodie-)toolchain veur **Platskript** (`.plats`). Ge schryft in Plats, en VlaamsCodex zet dat om naar Python en voert het uit.
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-0.1.0-orange.svg)](CHANGELOG.md)
 
-De grote truc (“magic mode”): na installatie werkt dit:
+A transpiler toolchain for **Platskript** (`.plats`), a parody programming language that uses Flemish dialect keywords. VlaamsCodex compiles Platskript source code to Python and executes it.
+
+## Key Feature
+
+After installation, you can run Platskript files directly with Python:
 
 ```bash
 python examples/hello.plats
 ```
 
-## Installatie
+This "magic mode" works through Python's source encoding mechanism (PEP 263).
 
-### Optie A: pipx (aanbevolen veur eindgebruikers)
+## Installation
+
+### Option A: pipx (Recommended for End Users)
 
 ```bash
 python -m pip install --user pipx
@@ -18,74 +26,74 @@ python -m pipx ensurepath
 pipx install vlaamscodex
 ```
 
-### Optie B: virtualenv + pip
+### Option B: Virtual Environment
 
 ```bash
 python -m venv .venv
-. .venv/bin/activate
-python -m pip install -U pip
-python -m pip install vlaamscodex
+source .venv/bin/activate
+pip install -U pip
+pip install vlaamscodex
 ```
 
-### Optie C: van broncode (developer / editable)
+### Option C: Development Installation
 
 ```bash
 python -m venv .venv
-. .venv/bin/activate
-python -m pip install -U pip
-python -m pip install -e .
+source .venv/bin/activate
+pip install -U pip
+pip install -e ".[dev]"
 ```
 
-## Gebruik
+## Usage
 
-### 1) CLI (altijd betrouwbaar)
+### CLI Commands
 
-Runnen:
+Run a Platskript program:
 
 ```bash
-plats run pad/naar/script.plats
+plats run path/to/script.plats
 ```
 
-Python tonen die gegenereerd wordt:
+Display generated Python code:
 
 ```bash
-plats show-python pad/naar/script.plats
+plats show-python path/to/script.plats
 ```
 
-Naar een `.py` bestand compileren:
+Compile to a Python file:
 
 ```bash
-plats build pad/naar/script.plats --out script.py
+plats build path/to/script.plats --out output.py
 ```
 
-### 2) “Magic mode”: `python script.plats`
+### Magic Mode
 
-Elk `.plats` bestand begint met een Python encoding regel:
+Platskript files begin with a Python encoding declaration:
 
 ```text
 # coding: vlaamsplats
 ```
 
-Daarna kunt ge gewoon doen:
+After installing VlaamsCodex, execute directly with Python:
 
 ```bash
-python pad/naar/script.plats
+python path/to/script.plats
 ```
 
-Snel testen met de example:
+### Quick Test
 
 ```bash
 plats run examples/hello.plats
 python examples/hello.plats
 ```
 
-Verwachte output:
+Expected output:
 
 ```text
 gdag aan weeireld
 ```
 
-## Voorbeeld: `hello.plats`
+## Example Program
 
 ```text
 # coding: vlaamsplats
@@ -100,48 +108,78 @@ plan doe
 gedaan
 ```
 
-## Hoe werkt het (stap voor stap)
+## How It Works
 
-1. Python ziet `# coding: vlaamsplats` (PEP 263) en vraagt die codec op om de file te decoden.
-2. Bij normale startup draait Python z’n `site` module en verwerkt alle `.pth` files in site-packages.
-3. VlaamsCodex installeert `vlaamscodex_autoload.pth` in site-packages met exact dit:
-   `import vlaamscodex.codec as _vc; _vc.register()`
-4. Die `register()` registreert de codec `vlaamsplats`.
-5. De codec decodeert de bytes (UTF-8), knipt de coding-regel weg, transpileert Plats → Python source, en geeft die Python source terug aan de interpreter.
-6. Python voert de gegenereerde Python code uit alsof het altijd al Python was.
+1. Python detects `# coding: vlaamsplats` (PEP 263) and requests the corresponding codec.
+2. During normal startup, Python's `site` module processes `.pth` files in site-packages.
+3. VlaamsCodex installs `vlaamscodex_autoload.pth` containing:
+   ```
+   import vlaamscodex.codec as _vc; _vc.register()
+   ```
+4. The `register()` function registers the `vlaamsplats` codec.
+5. The codec decodes UTF-8 bytes, strips the encoding declaration, transpiles Platskript to Python, and returns valid Python source.
+6. Python executes the generated code transparently.
 
-## Taal (v0.1) in ’t kort
+## Language Specification (v0.1)
 
-Statements eindigen op `amen`. Programma’s zijn `plan doe ... gedaan`.
+Statements terminate with `amen`. Programs are wrapped in `plan doe ... gedaan`.
 
-- `zet <var> op <expr> amen`
-- `klap <expr> amen`
-- `maak funksie <naam> met <params...> doe ... gedaan`
-- `roep <naam> met <args...> amen`
-- `geeftterug <expr> amen`
+### Statements
 
-Expressions:
-- `tekst <woorden...>` (words met spaties)
-- `getal <digits>`
-- `da <naam>`
-- `spatie`
-- `plakt` (string concat, Python `+`)
+| Syntax | Description |
+|--------|-------------|
+| `zet <var> op <expr> amen` | Variable assignment |
+| `klap <expr> amen` | Print expression |
+| `maak funksie <name> met <params...> doe ... gedaan` | Function definition |
+| `roep <name> met <args...> amen` | Function call |
+| `geeftterug <expr> amen` | Return statement |
 
-## Limitaties / troubleshooting
+### Expressions
 
-- `python -S` zet `site` uit → `.pth` hooks draaien niet → magic mode kan breken.
-- `python -I` (isolated) kan ook site/user-site beperken → magic mode kan breken.
-- Fallback: `plats run script.plats` werkt altijd.
+| Syntax | Description |
+|--------|-------------|
+| `tekst <words...>` | String literal (words joined by spaces) |
+| `getal <digits>` | Numeric literal |
+| `da <name>` | Variable reference |
+| `spatie` | Space character literal |
+| `plakt` | String concatenation operator |
 
-Als ge krijgt: `SyntaxError: encoding problem: vlaamsplats`:
-- check dat `vlaamscodex` echt geïnstalleerd is in dézelfde venv/omgeving,
-- en dat ge niet met `-S` of `-I` runt.
+## Limitations
 
-## Repository structuur
+- **`python -S`**: Disables `site` module, preventing `.pth` hook execution.
+- **`python -I`**: Isolated mode restricts site-packages access.
+- **Fallback**: Use `plats run script.plats` when magic mode is unavailable.
 
-- `src/vlaamscodex/` — compiler, codec, CLI
-- `data/vlaamscodex_autoload.pth` — startup hook (registreert codec)
-- `examples/` — voorbeeld `.plats` files
-- `tests/` — pytest tests (incl. subprocess test voor magic mode)
-- `docs/` — extra uitleg en specs
+### Troubleshooting
 
+If you encounter `SyntaxError: encoding problem: vlaamsplats`:
+
+1. Verify VlaamsCodex is installed in the active Python environment.
+2. Ensure you are not using `-S` or `-I` flags.
+3. Use `plats run` as an alternative.
+
+## Project Structure
+
+```
+src/vlaamscodex/     # Core implementation (compiler, codec, CLI)
+data/                # Runtime artifacts (.pth startup hook)
+examples/            # Sample Platskript programs
+tests/               # Test suite
+docs/                # Technical documentation
+```
+
+## Documentation
+
+- [Overview](docs/01_overview.md)
+- [How Python Runs It](docs/02_how_python_runs_it.md)
+- [Packaging & Installation](docs/03_packaging_and_install.md)
+- [Language Specification](docs/04_language_spec.md)
+- [Security Notes](docs/05_security_and_safety.md)
+
+## Contributing
+
+Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTING.md) before submitting a pull request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
