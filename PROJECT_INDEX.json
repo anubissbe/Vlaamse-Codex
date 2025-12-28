@@ -1,0 +1,225 @@
+{
+  "project": {
+    "name": "VlaamsCodex",
+    "version": "0.2.0",
+    "description": "A transpiler toolchain for Platskript, a parody programming language using Flemish dialect keywords that compiles to Python",
+    "python_requires": ">=3.10",
+    "license": "MIT",
+    "repository": "https://github.com/anubissbe/Vlaamse-Codex"
+  },
+  "entry_points": {
+    "cli": {
+      "path": "src/vlaamscodex/cli.py",
+      "function": "main",
+      "command": "plats"
+    },
+    "codec": {
+      "path": "src/vlaamscodex/codec.py",
+      "function": "register"
+    },
+    "transformer": {
+      "path": "src/vlaamscodex/dialects/transformer.py",
+      "function": "transform"
+    }
+  },
+  "modules": {
+    "transpiler": {
+      "compiler": {
+        "path": "src/vlaamscodex/compiler.py",
+        "exports": ["compile_plats", "OP_MAP"],
+        "docs": "docs/api/compiler.md"
+      },
+      "codec": {
+        "path": "src/vlaamscodex/codec.py",
+        "exports": ["register", "VlaamsPlatsCodec"],
+        "docs": "docs/api/codec.md"
+      }
+    },
+    "cli": {
+      "cli": {
+        "path": "src/vlaamscodex/cli.py",
+        "exports": ["main", "COMMAND_ALIASES"],
+        "docs": "docs/api/cli.md"
+      },
+      "repl": {
+        "path": "src/vlaamscodex/repl.py",
+        "exports": ["run_repl", "REPL_ALIASES"],
+        "docs": "docs/api/repl.md"
+      },
+      "checker": {
+        "path": "src/vlaamscodex/checker.py",
+        "exports": ["check_file", "check_syntax"],
+        "docs": "docs/api/checker.md"
+      },
+      "examples": {
+        "path": "src/vlaamscodex/examples.py",
+        "exports": ["list_examples", "show_example", "run_example", "save_example"],
+        "docs": "docs/api/examples.md"
+      },
+      "fortune": {
+        "path": "src/vlaamscodex/fortune.py",
+        "exports": ["print_fortune", "PROVERBS"],
+        "docs": "docs/api/fortune.md"
+      },
+      "init": {
+        "path": "src/vlaamscodex/init.py",
+        "exports": ["create_project"],
+        "docs": "docs/api/init.md"
+      }
+    },
+    "dialects": {
+      "transformer": {
+        "path": "src/vlaamscodex/dialects/transformer.py",
+        "exports": ["transform", "available_packs", "PackInfo", "DialectTransformConfig"],
+        "docs": "docs/api/transformer.md"
+      }
+    }
+  },
+  "data": {
+    "dialect_packs": {
+      "path": "dialects/packs/",
+      "count": 84,
+      "format": "json",
+      "docs": "dialects/README.md"
+    },
+    "examples": {
+      "path": "examples/",
+      "count": 5,
+      "files": ["hello.plats", "funksies.plats", "teller.plats", "begroeting.plats", "rekenmachine.plats"]
+    }
+  },
+  "tests": {
+    "path": "tests/",
+    "files": ["test_compiler.py", "test_magic_subprocess.py", "test_dialect_transformer.py", "conftest.py"],
+    "framework": "pytest",
+    "docs": "docs/technical/testing.md"
+  },
+  "tools": {
+    "validate_dialect_packs": {
+      "path": "tools/validate_dialect_packs.py",
+      "purpose": "Validate dialect pack schema and consistency"
+    },
+    "generate_dialect_packs": {
+      "path": "tools/generate_dialect_packs.py",
+      "purpose": "Scaffold new dialect packs"
+    }
+  },
+  "config_files": {
+    "pyproject.toml": "Package metadata, dependencies, CLI entry",
+    "vlaamscodex_build_backend.py": "Custom PEP 517 backend for .pth injection",
+    "data/vlaamscodex_autoload.pth": "Startup hook for codec registration"
+  },
+  "ci_cd": {
+    "workflows": [
+      ".github/workflows/ci.yml",
+      ".github/workflows/publish.yml"
+    ],
+    "docs": "docs/admin/ci-cd.md"
+  },
+  "vscode_extension": {
+    "path": "vscode-extension/",
+    "entry": "vscode-extension/src/extension.ts",
+    "package": "vscode-extension/package.json"
+  },
+  "documentation": {
+    "root": [
+      "README.md",
+      "CLAUDE.md",
+      "CHANGELOG.md",
+      "CONTRIBUTING.md"
+    ],
+    "architecture": [
+      "docs/architecture/00_overview.md",
+      "docs/architecture/01_transpiler.md",
+      "docs/architecture/02_dialect_transformer.md",
+      "docs/architecture/03_cli.md"
+    ],
+    "api": [
+      "docs/api/README.md",
+      "docs/api/compiler.md",
+      "docs/api/codec.md",
+      "docs/api/transformer.md",
+      "docs/api/cli.md",
+      "docs/api/checker.md",
+      "docs/api/repl.md",
+      "docs/api/examples.md",
+      "docs/api/fortune.md",
+      "docs/api/init.md"
+    ],
+    "technical": [
+      "docs/technical/README.md",
+      "docs/technical/build-system.md",
+      "docs/technical/transpiler-internals.md",
+      "docs/technical/dialect-engine.md",
+      "docs/technical/testing.md",
+      "docs/technical/contributing.md"
+    ],
+    "user": [
+      "docs/user/README.md",
+      "docs/user/quick-start.md",
+      "docs/user/cli-reference.md",
+      "docs/user/language-tutorial.md",
+      "docs/user/dialect-guide.md",
+      "docs/user/troubleshooting.md"
+    ],
+    "admin": [
+      "docs/admin/README.md",
+      "docs/admin/release-process.md",
+      "docs/admin/deployment.md",
+      "docs/admin/configuration.md",
+      "docs/admin/maintenance.md",
+      "docs/admin/ci-cd.md"
+    ],
+    "legacy": [
+      "docs/01_overview.md",
+      "docs/02_how_python_runs_it.md",
+      "docs/03_packaging_and_install.md",
+      "docs/04_language_spec.md",
+      "docs/05_security_and_safety.md",
+      "docs/06_user_guide.md",
+      "docs/08_plats_documentation_en.md"
+    ],
+    "dialects": [
+      "dialects/README.md",
+      "dialects/schema.md"
+    ]
+  },
+  "documentation_stats": {
+    "total_files": 39,
+    "by_category": {
+      "root": 4,
+      "architecture": 4,
+      "api": 10,
+      "technical": 6,
+      "user": 6,
+      "admin": 6,
+      "legacy": 7,
+      "dialects": 2
+    }
+  },
+  "version_sync": [
+    "src/vlaamscodex/__init__.py",
+    "pyproject.toml",
+    "vscode-extension/package.json"
+  ],
+  "commands": {
+    "install_dev": "pip install -e \".[dev]\"",
+    "run_tests": "pytest tests/ -v",
+    "run_example": "plats run examples/hello.plats",
+    "magic_mode": "python examples/hello.plats",
+    "build": "python -m build",
+    "validate_packs": "python tools/validate_dialect_packs.py",
+    "check_health": "plats version && python -c \"import codecs; codecs.lookup('vlaamsplats')\""
+  },
+  "environment_variables": {
+    "VLAAMSCODEX_DIALECTS_DIR": "Override dialect packs location",
+    "VLAAMSCODEX_DIALECT_DETERMINISTIC": "Enable deterministic mode (default: True)",
+    "VLAAMSCODEX_DIALECT_SEED": "Seed for deterministic randomness (default: 0)",
+    "VLAAMSCODEX_DIALECT_PARTICLES": "Enable particle insertion (default: False)",
+    "VLAAMSCODEX_DIALECT_MAX_PASSES": "Maximum transformation passes (default: 3)",
+    "VLAAMSCODEX_DIALECT_STRICT_IDEMPOTENCY": "Raise on non-convergence (default: False)",
+    "VLAAMSCODEX_PRONOUN_SUBJECT": "Subject pronoun (default: ge)",
+    "VLAAMSCODEX_PRONOUN_OBJECT": "Object pronoun (default: u)",
+    "VLAAMSCODEX_PRONOUN_POSSESSIVE": "Possessive pronoun (default: uw)"
+  }
+}

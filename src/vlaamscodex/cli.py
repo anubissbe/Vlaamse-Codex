@@ -4,6 +4,8 @@ Usage:
   plats run path/to/script.plats       (or: plats loop)
   plats build path/to/script.plats     (or: plats bouw)
   plats show-python path/to/script.plats (or: plats toon)
+  plats vraag "<vraag>" --dialect <dialect_id>
+  plats dialecten
   plats help                           (or: plats haalp)
   plats version                        (or: plats versie)
 
@@ -32,6 +34,8 @@ from .examples import (
     list_examples, show_example, run_example, save_example,
     detect_examples_dialect, print_examples_help, EXAMPLES_ALIASES
 )
+from .dialects.transformer import available_packs as available_dialect_packs
+from .dialects.transformer import transform as transform_dialect
 
 # =============================================================================
 # MULTI-VLAAMS DIALECT ALIASSEN 🇧🇪
@@ -301,6 +305,8 @@ COMMANDS (English):
   plats run <file.plats>                Run a Platskript program
   plats build <file.plats> --out <file> Compile to Python source file
   plats show-python <file.plats>        Display generated Python code
+  plats vraag "<vraag>" --dialect <id>  Vraag iets (antwoord in dialect packs)
+  plats dialecten                       List dialect packs
   plats help                            Show this help message
   plats version                         Show version information
 
@@ -506,6 +512,32 @@ Mier info: https://github.com/anubissbe/Vlaamse-Codex
     return 0
 
 
+def cmd_dialecten() -> int:
+    packs = available_dialect_packs()
+    for p in packs:
+        inherits = f" <- {', '.join(p.inherits)}" if p.inherits else ""
+        print(f"{p.id}\t{p.label}{inherits}")
+    return 0
+
+
+def cmd_vraag(question: str, dialect_id: str = "vlaams/basis") -> int:
+    # NOTE: This CLI currently returns a deterministic neutral answer template and then
+    # post-processes it via dialect packs. No LLM translation is used here.
+    neutral_answer = (
+        "Dat is een goede vraag. Wat bedoel je precies?\n"
+        "Als je wat extra context geeft, kan ik gerichter antwoorden."
+    )
+    try:
+        out = transform_dialect(neutral_answer, dialect_id)
+    except KeyError:
+        print(f"Onbekend dialect_id: {dialect_id}")
+        print("Beschikbare dialecten: (use: plats dialecten)")
+        return 2
+
+    print(out)
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     # Handle 'help' and 'version' before argparse
     if argv is None:
@@ -577,6 +609,12 @@ def main(argv: list[str] | None = None) -> int:
     p_examples.add_argument("--run", metavar="NAME", help="Run an example")
     p_examples.add_argument("--save", metavar="NAME", help="Save example to file")
 
+    # Dialect packs (rule-based text post-processing)
+    p_vraag = sub.add_parser("vraag", help="Vraag iets (antwoord in dialect, deterministisch)")
+    p_vraag.add_argument("question", help="De vraag (string)")
+    p_vraag.add_argument("--dialect", default="vlaams/basis", help="Dialect pack id (default: vlaams/basis)")
+    sub.add_parser("dialecten", help="Lijst alle beschikbare dialect packs")
+
     sub.add_parser("help", help="Show detailed help (English)")
     sub.add_parser("haalp", help="Toon hulp in 't Vlaams")
     sub.add_parser("version", help="Show version", aliases=["versie"])
@@ -604,6 +642,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.cmd == "examples":
         dialect = detect_examples_dialect(original_cmd)
         return cmd_examples(show=args.show, run=args.run, save=args.save, dialect=dialect)
+    if args.cmd == "dialecten":
+        return cmd_dialecten()
+    if args.cmd == "vraag":
+        return cmd_vraag(question=args.question, dialect_id=args.dialect)
     if args.cmd == "help":
         return cmd_help()
     if args.cmd == "haalp":

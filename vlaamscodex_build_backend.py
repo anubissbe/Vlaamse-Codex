@@ -4,6 +4,7 @@ import base64
 import csv
 import hashlib
 import os
+import shutil
 import tempfile
 import zipfile
 from pathlib import Path
@@ -31,8 +32,11 @@ def _ensure_autoload_pth_in_wheel(wheel_path: Path) -> None:
     if not src_pth.exists():
         raise FileNotFoundError(str(src_pth))
 
+    src_dialects = Path(__file__).with_name("dialects")
+
     with zipfile.ZipFile(wheel_path, "r") as zf:
-        if pth_name in zf.namelist():
+        # Fast path: pth already present and dialects already present.
+        if pth_name in zf.namelist() and any(name.startswith("dialects/index.json") for name in zf.namelist()):
             return
 
         dist_info_dir = _wheel_dist_info_dir(zf)
@@ -45,6 +49,10 @@ def _ensure_autoload_pth_in_wheel(wheel_path: Path) -> None:
             # Add the .pth at wheel root (purelib root -> site-packages).
             (td_path / pth_name).write_bytes(src_pth.read_bytes())
 
+            # Add dialect packs at wheel root (purelib root -> site-packages/dialects).
+            if src_dialects.exists():
+                shutil.copytree(src_dialects, td_path / "dialects", dirs_exist_ok=True)
+
             # Update RECORD.
             record_path = td_path / record_name
             rows: list[list[str]] = []
@@ -52,11 +60,20 @@ def _ensure_autoload_pth_in_wheel(wheel_path: Path) -> None:
                 with record_path.open(newline="", encoding="utf-8") as f:
                     rows = [row for row in csv.reader(f)]
 
-            # Remove any existing entry for the .pth (shouldn't exist).
-            rows = [row for row in rows if row and row[0] != pth_name]
+            new_files: list[str] = [pth_name]
+            if src_dialects.exists():
+                for file_path in (td_path / "dialects").rglob("*"):
+                    if file_path.is_dir():
+                        continue
+                    new_files.append(file_path.relative_to(td_path).as_posix())
 
-            digest, size = _hash_file(td_path / pth_name)
-            rows.append([pth_name, digest, str(size)])
+            # Remove any existing entries for files we (re-)add.
+            new_file_set = set(new_files)
+            rows = [row for row in rows if row and row[0] not in new_file_set]
+
+            for rel in new_files:
+                digest, size = _hash_file(td_path / rel)
+                rows.append([rel, digest, str(size)])
 
             # RECORD must have empty hash/size.
             new_rows: list[list[str]] = []
